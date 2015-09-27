@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Git Advanced: forking/pull requests</title>
+
+		<meta name="description" content="Git Advanced: forking/pull requests">
+		<meta name="author" content="Mateusz Szczap">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+    </head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+				<section>
+					<h1>Git Advanced: forking/pull requests</h1>
+    					<p>
+                            <small>Mateusz Szczap</small><br>
+                            <small>mobile.de - eBay Inc. subsidiary</small><br>
+                        </p>
+                    <img height="20%" width="20%" src="Mobile.de-logo.jpg" />
+				</section>
+
+                <section>
+                    <img src="why_bother.jpg" />
+                </section>
+
+                <section>
+                    <h1>Pull Requests:</h1>
+                    <ul>
+                        <li>(+) - form of code review</li>
+                        <li>(+) - lets a team review the changes</li>
+                        <li>(+) - commits with various code issues don't go to target repo to clutter history</li>
+                        <li>(+/-) - impossible to review after pushing a commit to the remote</li>
+                        <li>(-) - pre commit reviews can be slower</li>
+                        <li>(-) - in github - no patchsets yet like in Gerrit</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Distribution types</h1>
+                    <ul>
+                        <li>centralized (only one remote)</li>
+                        <li>distributed (multiple remotes)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>centralized</h1>
+                    <ul>
+                        <li>typically a subversion style model</li>
+                        <li>only one remote, by convention called: 'origin'</li>
+                        <pre>
+                            <code>
+MacBook:engi mszczap$ git remote -v
+origin  https://github.com/paked/engi (fetch)
+origin  https://github.com/paked/engi (push)
+                            </code>
+                        </pre>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>centralized</h1>
+                        <pre>
+                            <code>
+MacBook:engi mszczap$ cat .git/config
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+    precomposeunicode = true
+
+[remote "origin"]
+    url = https://github.com/paked/engi
+    fetch = +refs/heads/*:refs/remotes/origin/*
+                            </code>
+                        </pre>
+                </section>
+
+                <section>
+                    <h1>centralized</h1>
+                        <pre>
+                            <code>
+MacBook:engi$ git log origin/master
+commit 1711595d93bcf5dc7ecff26ba0d47b0914d43ec9
+Merge: 1a23404 fa4fd03
+Author: Harrison Shoebridge &lt;harrison@theshoebridges.com&gt;
+Date:   Thu Aug 20 11:49:27 2015 +1000
+
+Merge pull request #12 from paked/contribution-update
+
+[ANNOUNCEMENT] Update README with information on slack and trello
+
+commit fa4fd037caa6eb71bc4fbc6a4a30aa3f6b2a2468
+Author: Harrison Shoebridge &lt;harrison@theshoebridges.com&gt;
+Date:   Wed Aug 19 09:14:08 2015 +1000
+
+Update README with information on slack and trello
+                            </code>
+                        </pre>
+                </section>
+
+                <section>
+                    <h1>distributed</h1>
+                    <pre>
+                        <code>
+MacBook:engi mszczap$ git remote add mszczap git@github.com:matiwinnetou/engi.git
+                        </code>
+                    </pre>
+                    <pre>
+                        <code>
+MacBook:engi mszczap$ git remote -v
+mszczap git@github.com:matiwinnetou/engi.git (fetch)
+mszczap git@github.com:matiwinnetou/engi.git (push)
+origin  https://github.com/paked/engi (fetch)
+origin  https://github.com/paked/engi (push)
+                        </code>
+                    </pre>
+                </section>
+
+                <section>
+                    <h1>distributed</h1>
+                    <pre>
+                        <code>
+MacBook:engi mszczap$ cat .git/config
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+    precomposeunicode = true
+[remote "origin"]
+    url = https://github.com/paked/engi
+    fetch = +refs/heads/*:refs/remotes/origin/*
+[remote "mszczap"]
+    url = git@github.com:matiwinnetou/engi.git
+    fetch = +refs/heads/*:refs/remotes/mszczap/*
+                        </code>
+                    </pre>
+                </section>
+
+                <section>
+                    <h1>distributed</h1>
+                    <pre>
+                        <code>
+MacBook:engi mszczap$ git fetch --all
+Fetching origin
+Fetching mszczap
+From github.com:matiwinnetou/engi
+* [new branch]      contribution-update -> mszczap/contribution-update
+* [new branch]      dev        -> mszczap/dev
+* [new branch]      gh-pages   -> mszczap/gh-pages
+* [new branch]      master     -> mszczap/master
+                        </code>
+                    </pre>
+                </section>
+
+                <section>
+                    <h1>distributed</h1>
+                    <pre>
+                        <code>
+MacBook:engi mszczap$ git branch -lvv
+* master f6b0469 hello
+                        </code>
+                    </pre>
+                </section>
+
+                <section>
+                    <h1>distributed</h1>
+                    <pre>
+                        <code>
+Winnetou-iMac:engi mati$ git branch -rvvs
+mszczap/contribution-update fa4fd03 Update README with information on slack and trello
+mszczap/dev                 96c8133 Remove webgl task
+mszczap/gh-pages            0fcb3cb Create gh-pages branch via GitHub
+mszczap/master              1711595 Merge pull request #12 from paked/contribution-update
+origin/HEAD                 -> origin/master
+origin/contribution-update  fa4fd03 Update README with information on slack and trello
+origin/dev                  96c8133 Remove webgl task
+origin/gh-pages             0fcb3cb Create gh-pages branch via GitHub
+origin/master               1711595 Merge pull request #12 from paked/contribution-update
+                        </code>
+                    </pre>
+                    <b>forking a repo means forking with all branches (!)</b>
+                </section>
+
+                <section>
+                    <h1>distributed</h1>
+                    <pre>
+                        <code>
+Winnetou-iMac:engi mati$ git diff origin/master..mszczap/master
+                        </code>
+                    </pre>
+                    <h3>learnings:</h3>
+                    <ul>
+                        <li>we do not need local branches to browse through remote branches</li>
+                        <li>we have a local copy of all remote branches available once we perform 'git fetch --all'</li>
+                        <li>forking a repo means forking all branches (!)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Git workflow models</h1>
+                    <ul>
+                        <li>Centralized (working only on one centralized repo)</li>
+                        <li>Static feature branch (working only on one centralized repo)</li>
+                        <li>Gitflow (working only on one centralized repo)</li>
+                        <li>Forking (working only on multiple repos)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Centralized (working only on master)</h1>
+                    <ul>
+                        <li>was never used at mobile</li>
+                        <li>typically developers do "git pull --rebase" and apply they commit on top of what is in master</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Static feature branch (working only on one centralized repo)</h1>
+                    <ul>
+                        <li>mobile platform default</li>
+                        <li>old jenkins could "understand" only static branches</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Feature branch (working only on one centralized repo)</h1>
+                    <ul>
+                        <li>master as the main integration point</li>
+                        <li>feature branches are named after tickets or with descriptive names ("price_transparency")</li>
+                        <li>with "ci-jenkins" really easy - jobs will be created for each feature branch separately</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Gitflow (working only on one centralized repo)</h1>
+                    <ul>
+                        <li>just like feature branch model but with extra conventions for branch names</li>
+                        <li>extra "develop" branch as an integration point</li>
+                        <li>feature branches are branched off develop branch</li>
+                        <li>master represents live code</li>
+                        <li>hot fix branches that are branched off master</li>
+                        <li>with "ci-jenkins" really easy - jobs will be created for each feature branch separately</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>git's default mode - forking</h1>
+                    <ul>
+                        <li>an only option when a team does not have write access to the parent repository</li>
+                        <li>helps to keep a git history tidy, if not dome, can make browsing through history difficult</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Git craftsmanship</h1>
+                    <ul>
+                        <li>we openly do this in Java, e.g. refactoring but why not in git?</li>
+                        <li>Pull Requests - let developers review the code before it is merged in</li>
+                        <li>squash small meaningless commits</li>
+                        <li>clean commit messages with ticket number</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>An example of messy history:</h1>
+                </section>
+
+                <section>
+                    <h1>Tip no. 1 - git pull can mess things up</h1>
+                    <p>Do not use git pull --rebase</p>
+                    <p>Often your history is rewritten locally and git pull --rebase will just make maters worse as it gets changes from the server</p>
+                    <p>instead use git fetch --all and then git rebase  remote/branch, e.g. git </p>
+                </section>
+
+                <section>
+                    <h1>Tip no. 2 - fetch instead</h1>
+                    <p>git fetch -p --all (fetches all repos and prunes deleted remote ones)</p>
+                    <p>git fetch -p origin (fetches only from remote:origin)</p>
+                    <p>git fetch -p --multiple origin upstream (fetches from remotes: (origin and upstream)</p>
+                </section>
+
+                <section>
+                    <h1>Tip no. 3 - rebase </h1>
+                    <p>git rebase origin/master (your commit(s) are applied on top of what is in master)</p>
+                    <p>SHOW image example</p>
+                </section>
+
+                <section>
+                    <h1>Tip no. 4 - git push.default</h1>
+                    <p>git config --global push.default upstream</p>
+                    <ul>
+                        <li>nothing - do not push anything.</li>
+                        <li>matching - push all matching branches. All branches having the same name in both ends are considered to be matching. (Default in Git 1.x)</li>
+                        <li>upstream - push the current branch to its upstream branch</li>
+                        <li>simple - like upstream, but refuses to push if the upstream branch's name is different from the local one. (Default in Git 2.x) </li>
+                        <li>tracking - deprecated synonym for upstream.</li>
+                        <li>current - push the current branch to a branch of the same name.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Tip no. 5 - git commit --amend</h1>
+                    <ul>
+                        <li>git commit --amend (changes last commit that is on tip of the branch)</li>
+                        <li>git push REMOTENAME LOCAL_BRANCH:REMOTE_BRANCH, e.g. git push -u mszczap mszczap-XCS-456:XCS-456</li>
+                        <li>git push --force upstream</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Tip no. 6 - git rebase - rewrite history</h1>
+                    <ul>
+                        <li>git rebase -i master</li>
+                        <li>useful when we have lots of commits to squash</li>
+                        <li>can be painful as there maybe a need to resolve conflict multiple times</li>
+                        <li>we can do better - git apply trick!</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Tip no. 7 - git reset</h1>
+                    <ul>
+                        <li>git reset --soft HEAD^1 (keeps the changes in index, undo - removes one commit)</li>
+                        <li>git reset --hard origin/master (removes the changes and restores a local branch as if it was remote)</li>
+                        <li>git reset --hard HEAD~3 - undo three commits permanently</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Tip no. 8 - git apply trick</h1>
+                    <ul>
+                        <li>git apply <(git diff master..mszczap/xcs-465)</li>
+                        <li>changes local index and applies all the changes</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Tip no. 9 - git checkout from remote</h1>
+                    <ul>
+                        <li>git checkout -b LOCAL_BRANCH - what we normally do (assumes origin)</li>
+                        <li>git checkout -b LOCAL_BRANCH --track REMOTE/BRANCH_NAME (remote can be specified)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Tip no. 10 - git branch</h1>
+                    <ul>
+                        <li>git branch -lvv (shows local branches with upstream tracking info)</li>
+                        <li>git branch -r (shows remote branches)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Tip no. 11 - git pitfalls</h1>
+                    <ul>
+                        <li>git rebase --continue vs git commit --amend</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Tip no. 12 - git clean</h1>
+                    <ul>
+                        <li>git clean -f -d - (removes all untracked files)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Wrap up</h2>
+                    <img src="any_questions.jpg"/>
+                </section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+                history: true,
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+//				parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-4.jpg',
+//				parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/svg/reveal-svg-fragment.js', condition: function() { return !!document.querySelector( '[data-svg-fragment]' ); } }
+				]
+			});
+		</script>
+	</body>
+</html>
