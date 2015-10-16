@@ -196,7 +196,7 @@ MacBook:engi mszczap$ git branch -lvv
                     <h1>distributed</h1>
                     <pre>
                         <code>
-Winnetou-iMac:engi mati$ git branch -rvvs
+Winnetou-iMac:engi mati$ git branch -rvv
 mszczap/contribution-update fa4fd03 Update README with information on slack and trello
 mszczap/dev                 96c8133 Remove webgl task
 mszczap/gh-pages            0fcb3cb Create gh-pages branch via GitHub
@@ -237,24 +237,27 @@ Winnetou-iMac:engi mati$ git diff origin/master..mszczap/master
                 </section>
 
                 <section>
-                    <h1>Centralized (working only on master)</h1>
+                    <h1>Centralized</h1>
                     <ul>
+                        <li>working only on master</li>
                         <li>was never used at mobile</li>
                         <li>typically developers do "git pull --rebase" and apply they commit on top of what is in master</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h1>Static feature branch (working only on one centralized repo)</h1>
+                    <h1>Static feature branch</h1>
                     <ul>
+                        <li>working only on one centralized repo</li>
                         <li>mobile platform default</li>
                         <li>old jenkins could "understand" only static branches</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h1>Feature branch (working only on one centralized repo)</h1>
+                    <h1>Feature branch</h1>
                     <ul>
+                        <li>working only on one centralized repo</li>
                         <li>master as the main integration point</li>
                         <li>feature branches are named after tickets or with descriptive names ("price_transparency")</li>
                         <li>with "ci-jenkins" really easy - jobs will be created for each feature branch separately</li>
@@ -262,8 +265,9 @@ Winnetou-iMac:engi mati$ git diff origin/master..mszczap/master
                 </section>
 
                 <section>
-                    <h1>Gitflow (working only on one centralized repo)</h1>
+                    <h1>Gitflow</h1>
                     <ul>
+                        <li>working only on one centralized repo</li>
                         <li>just like feature branch model but with extra conventions for branch names</li>
                         <li>extra "develop" branch as an integration point</li>
                         <li>feature branches are branched off develop branch</li>
@@ -276,8 +280,9 @@ Winnetou-iMac:engi mati$ git diff origin/master..mszczap/master
                 <section>
                     <h1>git's default mode - forking</h1>
                     <ul>
-                        <li>an only option when a team does not have write access to the parent repository</li>
-                        <li>helps to keep a git history tidy, if not dome, can make browsing through history difficult</li>
+                        <li>the only option when a team does not have write access to the parent repository</li>
+                        <li>helps to keep a git history tidy, if not done, can make browsing through history difficult</li>
+                        <li>helps to avoid silly commits, when we want to check our code on integra</li>
                     </ul>
                 </section>
 
@@ -285,70 +290,75 @@ Winnetou-iMac:engi mati$ git diff origin/master..mszczap/master
                     <h1>Git craftsmanship</h1>
                     <ul>
                         <li>we openly do this in Java, e.g. refactoring but why not in git?</li>
-                        <li>Pull Requests - let developers review the code before it is merged in</li>
                         <li>squash small meaningless commits</li>
                         <li>clean commit messages with ticket number</li>
+                        <li>commits, which are atomic, i.e. can be released separately still clustered</li>
                     </ul>
                 </section>
 
                 <section>
                     <h1>An example of messy history:</h1>
+                    <img src="messy_history.png"/>
                 </section>
 
                 <section>
-                    <h1>Tip no. 1 - git pull can mess things up</h1>
+                    <h1>git pull can mess things up</h1>
                     <p>Do not use git pull --rebase</p>
                     <p>Often your history is rewritten locally and git pull --rebase will just make maters worse as it gets changes from the server</p>
-                    <p>instead use git fetch --all and then git rebase  remote/branch, e.g. git </p>
                 </section>
 
                 <section>
-                    <h1>Tip no. 2 - fetch instead</h1>
+                    <h1>use git fetch</h1>
                     <p>git fetch -p --all (fetches all repos and prunes deleted remote ones)</p>
-                    <p>git fetch -p origin (fetches only from remote:origin)</p>
-                    <p>git fetch -p --multiple origin upstream (fetches from remotes: (origin and upstream)</p>
+                    <p>git fetch -p origin (fetches only from remote:origin and prunes)</p>
+                    <p>git fetch -p --multiple origin upstream (fetches from remotes: (origin and upstream and prunes)</p>
                 </section>
 
                 <section>
-                    <h1>Tip no. 3 - rebase </h1>
-                    <p>git rebase origin/master (your commit(s) are applied on top of what is in master)</p>
-                    <p>SHOW image example</p>
+                    <h1>rebase your commit on top</h1>
+                    <ul>
+                        <li>git rebase origin/master (your commit(s) are applied on top of what is in master)</li>
+                        <li>rebase can be used only if you work in isolation (fork or your branch)</li>
+                    </ul>
                 </section>
 
                 <section>
-                    <h1>Tip no. 4 - git push.default</h1>
+                    <h1>configure - git push.default</h1>
+                    <hr>
                     <p>git config --global push.default upstream</p>
+                    <hr>
                     <ul>
                         <li>nothing - do not push anything.</li>
-                        <li>matching - push all matching branches. All branches having the same name in both ends are considered to be matching. (Default in Git 1.x)</li>
+                        <li>matching - push all matching branches.</li>
                         <li>upstream - push the current branch to its upstream branch</li>
-                        <li>simple - like upstream, but refuses to push if the upstream branch's name is different from the local one. (Default in Git 2.x) </li>
+                        <li>simple - like upstream</li>
                         <li>tracking - deprecated synonym for upstream.</li>
                         <li>current - push the current branch to a branch of the same name.</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h1>Tip no. 5 - git commit --amend</h1>
+                    <h1>git commit --amend</h1>
                     <ul>
                         <li>git commit --amend (changes last commit that is on tip of the branch)</li>
                         <li>git push REMOTENAME LOCAL_BRANCH:REMOTE_BRANCH, e.g. git push -u mszczap mszczap-XCS-456:XCS-456</li>
-                        <li>git push --force upstream</li>
+                        <li>git push --force</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h1>Tip no. 6 - git rebase - rewrite history</h1>
+                    <h1>git rebase - rewrite history</h1>
                     <ul>
                         <li>git rebase -i master</li>
                         <li>useful when we have lots of commits to squash</li>
                         <li>can be painful as there maybe a need to resolve conflict multiple times</li>
-                        <li>we can do better - git apply trick!</li>
+                        <li>should be avoided by using git commit --amend or if we have to...</li>
+                        <li>use - git apply trick!</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h1>Tip no. 7 - git reset</h1>
+                    <h1>git reset</h1>
                     <ul>
                         <li>git reset --soft HEAD^1 (keeps the changes in index, undo - removes one commit)</li>
                         <li>git reset --hard origin/master (removes the changes and restores a local branch as if it was remote)</li>
@@ -357,15 +367,16 @@ Winnetou-iMac:engi mati$ git diff origin/master..mszczap/master
                 </section>
 
                 <section>
-                    <h1>Tip no. 8 - git apply trick</h1>
+                    <h1>git apply trick</h1>
                     <ul>
                         <li>git apply <(git diff master..mszczap/xcs-465)</li>
                         <li>changes local index and applies all the changes</li>
+                        <li>useful to "squash commits" - works much better than git rebase -i</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h1>Tip no. 9 - git checkout from remote</h1>
+                    <h1>git checkout from remote</h1>
                     <ul>
                         <li>git checkout -b LOCAL_BRANCH - what we normally do (assumes origin)</li>
                         <li>git checkout -b LOCAL_BRANCH --track REMOTE/BRANCH_NAME (remote can be specified)</li>
@@ -373,7 +384,7 @@ Winnetou-iMac:engi mati$ git diff origin/master..mszczap/master
                 </section>
 
                 <section>
-                    <h1>Tip no. 10 - git branch</h1>
+                    <h1>git branch</h1>
                     <ul>
                         <li>git branch -lvv (shows local branches with upstream tracking info)</li>
                         <li>git branch -r (shows remote branches)</li>
@@ -381,16 +392,100 @@ Winnetou-iMac:engi mati$ git diff origin/master..mszczap/master
                 </section>
 
                 <section>
-                    <h1>Tip no. 11 - git pitfalls</h1>
+                    <h1>rebase vs commit --amend</h1>
                     <ul>
-                        <li>git rebase --continue vs git commit --amend</li>
+                        <li>(git rebase --continue) vs (git commit --amend)</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h1>Tip no. 12 - git clean</h1>
+                    <h1>remove untracked files</h1>
                     <ul>
-                        <li>git clean -f -d - (removes all untracked files)</li>
+                        <li>git clean -f -d  (removes all untracked files)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Checking out a pull req locally</h1>
+                    <ul>
+                        <li>git fetch origin pull/ID/head:BRANCHNAME e.g. git fetch origin pull/1054/head:pull-1054</li>
+                        <li>git checkout BRANCHNAME, e.g. git checkout pull-1054</li>
+                        <li>branch is read only</li>
+                        <li>https://help.github.com/articles/checking-out-pull-requests-locally/</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>git push</h1>
+                    <ul>
+                        <li>git push -u ORIGIN LOCAL_BRANCH:REMOTE_BRANCH, e.g. git push -u mszczap mszczap-XCS-546:XCS-546</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>delete remote branches</h1>
+                    <ul>
+                        <li>git push ORIGIN --delete BRANCH_NAME (e.g. git push mszczap --delete XCS-768)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>git cherry</h1>
+                    <ul>
+                        <li>git cherry -v LOCAL REMOTE/BRANCH_NAME (e.g. git cherry -v master origin/master)</li>
+                    </ul>
+                    <pre>
+                        <code>
+Winnetoui_Mac:pube mati$ git cherry -v master pull-1054
+    + d46cc5313ca6b258fdd4ae64271dd7099c7cf9f2 XCS-706: ab test for smart attrs
+    + d0ecb464bc37082143e63da241c3c6556cbda6cd improvements to AB testing
+                        </code>
+                    </pre>
+                </section>
+
+                <section>
+                    <h1>hub tool</h1>
+                    <ul>
+                        <li>https://github.com/github/hub</li>
+                        <li>brew install hub</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>configure hub</h1>
+                    <pre>
+                        <code>
+git config --global --add hub.host github.corp.ebay.com
+git config --global hub.protocol ssh
+                        </code>
+                    </pre>
+                </section>
+
+                <section>
+                    <h1>hub tool commands</h1>
+                    <ul>
+                        <li>hub pull-request or hub pull-request -m "Implemented feature X"</li>
+                        <li>hub checkout https://github.corp.ebay.com/mobile-de/public-search-germany-webapp/pull/1054</li>
+                        <li>hub am https://github.corp.ebay.com/mobile-de/public-search-germany-webapp/pull/1054</li>
+                        <li>hub apply https://github.corp.ebay.com/mobile-de/public-search-germany-webapp/pull/1054</li>
+                        <li>hub clone gthurm/test</li>
+                        <li>...</li>
+                    </ul>   
+                </section>
+
+                <section>
+                    <h1>git reflog</h1>
+                    <ul>
+                        <li>git reflog --relative-date</li>
+                        <li>local history</li>
+                        <img height="20%" width="100%" src="reflog.png"/>
+                    </ul>   
+                </section>
+
+                <section>
+                    <h1>git remote prune</h1>
+                    <ul>
+                        <li>git remote prune REMOTE (e.g. git remote prune origin)</li>
                     </ul>
                 </section>
 
