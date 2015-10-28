@@ -8,4 +8,4 @@ nodejs
 - git clone https://github.com/matiwinnetou/git-pull-reqs-forking-presentation
 - npm install
 - grunt serve
-- navigate to http://localgost:8000
+- navigate to http://localhost:8000
